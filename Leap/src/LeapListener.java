@@ -4,7 +4,7 @@ public class LeapListener extends Listener
 {
 	public Gesture.Type gestureType;
 	public boolean hasNulled = false; // Fixes the init null problem
-	DebugTools debug = new DebugTools(true);
+	DebugTools debug = new DebugTools(false);
 
 	public void onConnect(Controller leapMotion)
 	{
@@ -23,7 +23,7 @@ public class LeapListener extends Listener
 		leapMotion.enableGesture(Gesture.Type.TYPE_KEY_TAP, false);
 		leapMotion.enableGesture(Gesture.Type.TYPE_SCREEN_TAP, false);
 		leapMotion.enableGesture(Gesture.Type.TYPE_SWIPE, false);
-		//System.out.println("Gestures disabled...");
+		debug.debugPrintln("Gestures disabled...");
 		try
 		{
 			Thread.sleep(1000);
@@ -36,7 +36,7 @@ public class LeapListener extends Listener
 		leapMotion.enableGesture(Gesture.Type.TYPE_SWIPE);
 		leapMotion.enableGesture(Gesture.Type.TYPE_KEY_TAP);
 		leapMotion.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
-		//System.out.println("Gestures re-enabled...");
+		debug.debugPrintln("Gestures re-enabled...");
 	}
 
 	public void onDisconnect(Controller leapMotion)
