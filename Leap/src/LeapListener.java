@@ -3,22 +3,46 @@ import com.leapmotion.leap.*;
 public class LeapListener extends Listener
 {
 	public Gesture.Type gestureType;
-	
+	public boolean hasNulled = false; // Fixes the init null problem
+	DebugTools debug = new DebugTools(true);
+
 	public void onConnect(Controller leapMotion)
 	{
 		System.out.println("Controller connected...");
-		leapMotion.enableGesture(Gesture.Type.TYPE_SWIPE);
-		leapMotion.enableGesture(Gesture.Type.TYPE_CIRCLE);
-		leapMotion.enableGesture(Gesture.Type.TYPE_KEY_TAP);
-		leapMotion.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
+		leapMotion.enableGesture(Gesture.Type.TYPE_SWIPE, true);
+		leapMotion.enableGesture(Gesture.Type.TYPE_CIRCLE, true);
+		leapMotion.enableGesture(Gesture.Type.TYPE_KEY_TAP, true);
+		leapMotion.enableGesture(Gesture.Type.TYPE_SCREEN_TAP, true);
+		System.out.println("Gestures enabled...");
 		leapMotion.config().save();
 	}
-	
+
+	public void disableGestures(Controller leapMotion)
+	{
+		leapMotion.enableGesture(Gesture.Type.TYPE_CIRCLE, false);
+		leapMotion.enableGesture(Gesture.Type.TYPE_KEY_TAP, false);
+		leapMotion.enableGesture(Gesture.Type.TYPE_SCREEN_TAP, false);
+		leapMotion.enableGesture(Gesture.Type.TYPE_SWIPE, false);
+		//System.out.println("Gestures disabled...");
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch(Exception x)
+		{
+			
+		}
+		leapMotion.enableGesture(Gesture.Type.TYPE_CIRCLE);
+		leapMotion.enableGesture(Gesture.Type.TYPE_SWIPE);
+		leapMotion.enableGesture(Gesture.Type.TYPE_KEY_TAP);
+		leapMotion.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
+		//System.out.println("Gestures re-enabled...");
+	}
+
 	public void onDisconnect(Controller leapMotion)
 	{
 		System.out.println("Controller disconnected...");
 	}
-	
 
 	private void setGestureType(Gesture.Type newGestureType)
 	{
@@ -29,15 +53,16 @@ public class LeapListener extends Listener
 	{
 		return gestureType;
 	}
-	
+
 	public void onFrame(Controller leapMotion)
 	{
+		hasNulled = false;
 		Frame frame = leapMotion.frame();
 		GestureList gestures = frame.gestures();
 		for (int x = 0; x < gestures.count(); x++)
 		{
 			Gesture gesture = gestures.get(x);
-			
+
 			setGestureType(gesture.type());
 
 			switch (gesture.type())
@@ -63,8 +88,10 @@ public class LeapListener extends Listener
 				break;
 			}
 		}
-		
-		setGestureType(null);
-
+		if (hasNulled == false)
+		{
+			setGestureType(null);
+			hasNulled = true;
+		}
 	}
 }

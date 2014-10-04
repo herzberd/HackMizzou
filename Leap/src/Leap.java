@@ -17,6 +17,7 @@ public class Leap
 					if(listener.getGestureType() != null)
 					{
 						System.out.println(listener.getGestureType());
+						listener.disableGestures(leapMotion);
 					}
 				} 
 				catch (Exception e)
